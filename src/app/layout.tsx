@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Montserrat } from 'next/font/google'
 import './globals.css'
+import Navbar from '@/components/utils/Navbar'
+import { Suspense } from 'react'
+import Loading from './loading'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Montserrat({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'A-List',
@@ -16,7 +19,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Navbar />
+        <div className="p-5">{children}</div>
+      </body>
     </html>
   )
 }

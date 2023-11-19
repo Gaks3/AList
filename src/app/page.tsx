@@ -1,30 +1,54 @@
-import AList from './components/AList'
-
-interface Webp {
-  image_url: string
-}
-
-interface AnimeTopData {
-  mal_id: number
-  title: string
-  images: {
-    webp: Webp
-  }
-}
+import AList from '@/components/AnimeList'
+import HeaderList from '@/components/AnimeList/HeaderList'
+import { getAnimeRes, getNestedAnimeRes, randomize } from '@/libs/api'
+import { AnimeRecommend, DataAnimeRecommend } from '@/types/AnimeRecommend'
+import { AnimeDatas } from '@/types/AnimeTop'
 
 export default async function Home() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/top/anime`)
-  const anime = await res.json()
+  const topAnime: AnimeDatas = await getAnimeRes('top/anime', 'limit=5')
+  const recommendAnime: AnimeRecommend[] = await getNestedAnimeRes(
+    'recommendations/anime',
+    'entry'
+  )
+  const dataRecommendAnime: DataAnimeRecommend = {
+    data: randomize(recommendAnime, 10),
+  }
+  const ongoingAnime: AnimeDatas = await getAnimeRes('seasons/now', 'limit=5')
+  const upcomingAnime: AnimeDatas = await getAnimeRes(
+    'seasons/upcoming',
+    'limit=5'
+  )
 
   return (
-    <div>
-      <h1>Paling Populer</h1>
-      <div className="grid grid-cols-3 gap-3">
-        {anime.data.map((data: AnimeTopData) => {
-          // prettier-ignore
-          return <AList title={data.title} images={data.images.webp.image_url} key={data.mal_id}/>
-        })}
-      </div>
-    </div>
+    <>
+      <section>
+        <HeaderList title="Top Anime" link="top" linkTitle="View All" />
+        {/* @ts-ignore */}
+        <AList data={topAnime.data} />
+      </section>
+      <section className="mt-5">
+        <HeaderList
+          title="Recommendations Anime"
+          link="top"
+          linkTitle="View All"
+        />
+        {/* @ts-ignore */}
+        <AList data={dataRecommendAnime.data} />
+      </section>
+      <section className="mt-5">
+        <HeaderList title="On Going" link="/ongoing" linkTitle="View All" />
+        {/* @ts-ignore */}
+        <AList data={ongoingAnime.data} />
+      </section>
+      <section className="mt-5">
+        <HeaderList
+          title="Upcoming Anime"
+          link="/upcoming"
+          linkTitle="View All"
+        />
+        {/* @ts-ignore */}
+        <AList data={upcomingAnime.data} />
+      </section>
+    </>
   )
 }
