@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Collection {
+  id            Int       @id @default(autoincrement())
+  mal_id        String
+  image         String
+  title         String
+  status        Status    @default(WATCHING)
+  add_date      DateTime  @default(now())
+  complete_date DateTime?
+  episode       Int       @default(0)
+  email         String
+  rewatch       Int       @default(0)
+
+  @@unique([email, mal_id])
+  @@fulltext([title])
+}
+
+model Comment {
+  id          Int      @id @default(autoincrement())
+  mal_id      String
+  anime_title String
+  username    String
+  email       String
+  avatar      String
+  text        String   @db.Text()
+  date        DateTime @default(now())
+  rating      Int      @default(0)
+}
+
+enum Status {
+  WATCHING
+  PLAN
+  COMPLETED
+  HOLD
+  DROPPED
+}
