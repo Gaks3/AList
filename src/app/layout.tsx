@@ -2,8 +2,6 @@ import type { Metadata } from 'next'
 import { Montserrat } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/utils/Navbar'
-import { Suspense } from 'react'
-import Loading from './loading'
 
 const inter = Montserrat({ subsets: ['latin'] })
 
