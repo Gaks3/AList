@@ -1,4 +1,5 @@
 import { useRouter } from 'next/navigation'
+import { twMerge } from 'tailwind-merge'
 
 const Pagination = ({
   page,
@@ -6,7 +7,7 @@ const Pagination = ({
   pathname,
 }: {
   page: number
-  lastPage: number | undefined
+  lastPage: number
   pathname: string | undefined
 }) => {
   const router = useRouter()
@@ -35,20 +36,28 @@ const Pagination = ({
 
   return (
     <div className="flex justify-center items-center text-white text-base my-10 gap-4 cursor-pointer">
-      {page <= 1 ? null : (
-        <button className="hover:text-button" onClick={handePrevPage}>
-          &laquo; Prev
-        </button>
-      )}
+      <button
+        className={twMerge(
+          'hover:text-button',
+          page <= 1 ? 'invisible' : 'visible'
+        )}
+        onClick={handePrevPage}
+      >
+        &laquo; Prev
+      </button>
+
       <p>
         {page} of {lastPage}
       </p>
-      {/* @ts-ignore */}
-      {page >= lastPage ? null : (
-        <button className="hover:text-button" onClick={handeNextPage}>
-          Next &raquo;
-        </button>
-      )}
+      <button
+        className={twMerge(
+          'hover:text-button',
+          page >= lastPage && lastPage ? 'invisible' : 'visible'
+        )}
+        onClick={handeNextPage}
+      >
+        Next &raquo;
+      </button>
     </div>
   )
 }
